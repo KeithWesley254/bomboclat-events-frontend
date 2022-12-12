@@ -1,6 +1,6 @@
 # Project Name:
 Events Bomboclat
-# Authors:
+# Author:
 KEITH WESLEY
 # Description:
  Like you, the unstoppable entrepreneurs and passionate social ringleaders, we thrive at the intersection of culture, community, and commerce. We take on the complex world of ticketing—making. It's fast and easy for anyone to sell tickets and share their passion. Everything we build empowers creators, founders, and trendsetters to build thriving brands and communities through live experiences. Do more of what you love and grow eventfully
@@ -33,8 +33,6 @@ KEITH WESLEY
 </ol>
 
 # Deployment Link:
-
-https://events-bomboclat.netlify.app/
 
 # License:
 
