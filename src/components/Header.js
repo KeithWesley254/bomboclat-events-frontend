@@ -336,7 +336,7 @@ const Header = () => {
                 >
                   <Avatar
                     alt={userProfile?.full_name || ""}
-                    src={userProfile?.image_upload || ""}
+                    src={userProfile?.img_upload_url || ""}
                   />
                 </IconButton>
               )

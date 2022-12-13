@@ -1,10 +1,31 @@
 import { Box, Button, Card, CardActions, CardContent, FormControl, FormControlLabel, FormHelperText, Grid, OutlinedInput, Radio, RadioGroup, TextField } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ThemeState } from '../ThemeContext';
 import PhoneInput from 'react-phone-number-input';
 
 const ProfileForm = ({ setIsProfile, user, userProfile, setUserProfile }) => {
   const { btnColor, btnTextColor, btnHover, cardBg, cardHover, formAccent, formTextC, textColor } = ThemeState();
+  const nameRef = useRef();
+  const ageRef = useRef();
+  const bioRef = useRef();
+
+  const [imgsUpload, setImgsUpload] = useState({});
+
+  useEffect(() => {
+    const fileUpload = document.getElementById('image_upload');
+
+    const myImage = new File([userProfile?.the_blob], userProfile?.full_name, {
+      type: "image/jpeg",
+      lastModified: new Date(),
+    });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(myImage);
+    fileUpload.files = dataTransfer.files;
+
+    setImgsUpload({image_upload: dataTransfer.files[0]})
+
+  }, [])
 
   const [formData, setFormData] = useState({
     full_name: userProfile?.full_name,
@@ -15,37 +36,44 @@ const ProfileForm = ({ setIsProfile, user, userProfile, setUserProfile }) => {
     image_upload: userProfile?.image_upload
   })
 
-  const nameRef = useRef();
-  const ageRef = useRef();
-  const bioRef = useRef();
-  const imageRef = useRef();
+  function handleImages(e){
+    setImgsUpload({
+      ...imgsUpload, [e.target.name]: e.target.files[0],
+    });
+  }
 
   function handleSubmit(e){
     e.preventDefault();
+    const data = new FormData();
     
+    Object.keys(formData).forEach(key => {
+      data.append(key, formData[key])
+    });
+
+    Object.keys(imgsUpload).forEach(key => {
+      data.append(key, imgsUpload[key])
+    });
+    
+    submitToApi(data);
+  }
+
+  function submitToApi(data){
+
     const token = JSON.parse(localStorage.getItem("token"));
 
     fetch(`http://localhost:3000/api/user_profiles/${user?.id}`,{
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
         method: "PATCH",
-        body: JSON.stringify({
-          full_name: formData.full_name,
-          gender: formData.gender,
-          age: formData.age,
-          bio: formData.bio,
-          image_upload: formData.image_upload,
-          mobile_no: formData.mobile_no
-        })
+        body: data
     }).then((res) => {
       if (res.ok) {
         res.json().then((data) => {
           setUserProfile(data)
           setIsProfile(true)
         });
-      }}) 
+      }})
   }
 
   const radios = ["male", "female", "other"]
@@ -120,9 +148,9 @@ const ProfileForm = ({ setIsProfile, user, userProfile, setUserProfile }) => {
                     <TextField defaultValue={userProfile?.bio} size="small" sx={{ input: { color: formAccent }, "label": {color: formTextC} }} inputProps={{ style: { color: formTextC } }} label="Bio" name="bio" inputRef={bioRef} onChange={() => setFormData({...formData, bio: bioRef.current.value})} multiline={true} rows={4} />
                   </FormControl>
 
-                  <FormControl fullWidth sx={{ mb: 1}}>
-                    <OutlinedInput defaultValue={userProfile?.image_upload} inputRef={imageRef} size="small" name="image_upload" sx={{ input: { color: formAccent }, "label": {color: formTextC} }} onChange={() => setFormData({...formData, image_upload: imageRef.current.value})} />
-                    <FormHelperText sx={{color: formTextC}} id="my-helper-text">Please use an image url</FormHelperText>
+                  <FormControl fullWidth sx={{ mb: 1, mt: 1}}>
+                    <input type="file" accept='image/*' onChange={handleImages} name="image_upload" id="image_upload" />
+                    <FormHelperText sx={{color: formTextC}} id="my-helper-text">Upload your image</FormHelperText>
                   </FormControl>
 
                 </Box>
@@ -130,7 +158,7 @@ const ProfileForm = ({ setIsProfile, user, userProfile, setUserProfile }) => {
               </form>
             </CardContent>
             
-            <CardActions sx={{ mt: 2, display: "flex", justifyContent: "start" }}>
+            <CardActions sx={{ display: "flex", justifyContent: "start" }}>
               <Button
               sx={{
                   color: btnTextColor,

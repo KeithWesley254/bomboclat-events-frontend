@@ -53,7 +53,7 @@ const ProfileCard = ({ userProfile, setIsProfile }) => {
                         mt: 2,
                         width: {xs: "80%", md: "75%"},
                         }}
-                        src={userProfile?.image_upload}
+                        src={userProfile?.img_upload_url}
                         alt={userProfile?.full_name}
                         />
                     </Box>
