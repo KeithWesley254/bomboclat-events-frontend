@@ -17,9 +17,15 @@ KEITH WESLEY
 
 <ol>
     <li>React JS</li>
-    <li>Material Ui</li>
     <li>Ruby on Rails</li>
-    <li>Postgresql</li>
+    <li>MySQL</li>
+</ol>
+
+# Others:
+
+<ol>
+    <li>Material Ui</li>
+    <li>JWT</li>
 </ol>
 
 # APIs used:
